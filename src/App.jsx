@@ -13,9 +13,13 @@ function App() {
   const [newComment, setNewComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // --- CONFIGURATION DE L'URL API DYNAMIQUE ---
+  const rawApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+  const API_URL = rawApiUrl.endsWith('/') ? rawApiUrl.slice(0, -1) : rawApiUrl;
+
   // 1. Chargement des notes techniques
   useEffect(() => {
-    fetch('http://localhost:5000/api/posts')
+    fetch(`${API_URL}/api/posts`)
       .then((res) => res.json())
       .then((data) => {
         setPosts(data);
@@ -25,13 +29,13 @@ function App() {
         console.error("Erreur API:", err);
         setLoading(false);
       });
-  }, []);
+  }, [API_URL]);
 
   // 2. Chargement d'un rapport et de ses commentaires
   const handleViewPost = (post) => {
     setSelectedPost(post);
     setLoadingComments(true);
-    fetch(`http://localhost:5000/api/posts/${post.id}/comments`)
+    fetch(`${API_URL}/api/posts/${post.id}/comments`)
       .then((res) => res.json())
       .then((data) => {
         setComments(data);
@@ -49,7 +53,7 @@ function App() {
     if (!newComment.trim()) return;
 
     setIsSubmitting(true);
-    fetch(`http://localhost:5000/api/posts/${selectedPost.id}/comments`, {
+    fetch(`${API_URL}/api/posts/${selectedPost.id}/comments`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content: newComment })
@@ -71,7 +75,7 @@ function App() {
   const handleDeleteComment = (commentId) => {
     if (!window.confirm("Voulez-vous vraiment supprimer cette observation technique ?")) return;
 
-    fetch(`http://localhost:5000/api/comments/${commentId}`, {
+    fetch(`${API_URL}/api/comments/${commentId}`, {
       method: 'DELETE'
     })
       .then((res) => {
@@ -86,11 +90,11 @@ function App() {
   };
 
   return (
-    // Fond Blanc Foncé (Ivoire / Pierre) et Texte Sombre (Ardoise)
+    {/* Fond Blanc Foncé (Ivoire / Pierre) et Texte Sombre (Ardoise) */}
     <div className="min-h-screen bg-[#f4f2ee] text-[#1e293b] selection:bg-[#ea580c] selection:text-white flex flex-col justify-between scroll-smooth">
       
       <div>
-        {/* 🏛️ HEADER & NAVIGATION (Léger fond blanc crème semi-transparent avec bordure orange discret) */}
+        {/* 🏛️ HEADER & NAVIGATION */}
         <header className="border-b border-[#ea580c]/20 bg-[#f4f2ee]/90 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => setSelectedPost(null)}>
             <span className="text-2xl text-[#ea580c]">🦅</span>
@@ -327,7 +331,7 @@ function App() {
         )}
       </div>
 
-      {/* 🏛️ FOOTER DE PRESTIGE (Ardoise sombre texturé pour trancher élégamment avec le fond crème) */}
+      {/* 🏛️ FOOTER DE PRESTIGE */}
       <footer className="bg-[#0f172a] border-t border-slate-800 px-6 py-12 text-center sm:text-left text-slate-400">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-3">
