@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@layer base {
+  html, body, #root {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-h-screen: 100vh;
+    background-color: #f4f2ee;
+  }
+}
+
+@theme {
+  --color-forest-dark: #031e14;
+  --color-forest-deep: #062c1d;
+  --color-forest-accent: #0f5135;
+  --color-luxury-gold: #d9a74a;
+  --color-luxury-slate: #0f172a;
+}
