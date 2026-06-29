@@ -90,9 +90,8 @@ function App() {
   };
 
   return (
-    {/* Fond Blanc Foncé (Ivoire / Pierre) et Texte Sombre (Ardoise) */}
     <div className="min-h-screen bg-[#f4f2ee] text-[#1e293b] selection:bg-[#ea580c] selection:text-white flex flex-col justify-between scroll-smooth">
-      
+      {/* Fond Blanc Foncé (Ivoire / Pierre) et Texte Sombre (Ardoise) */}
       <div>
         {/* 🏛️ HEADER & NAVIGATION */}
         <header className="border-b border-[#ea580c]/20 bg-[#f4f2ee]/90 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
@@ -351,7 +350,6 @@ function App() {
           </div>
         </div>
       </footer>
-
     </div>
   );
 }
