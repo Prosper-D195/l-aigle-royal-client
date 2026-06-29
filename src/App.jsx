@@ -17,12 +17,14 @@ function App() {
   const rawApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   const API_URL = rawApiUrl.endsWith('/') ? rawApiUrl.slice(0, -1) : rawApiUrl;
 
-  // 1. Chargement des notes techniques
+  // 1. Chargement des notes techniques (Sécurisé sans cache)
   useEffect(() => {
-    fetch(`${API_URL}/api/posts`)
+    fetch(`${API_URL}/api/posts?_t=${new Date().getTime()}`)
       .then((res) => res.json())
       .then((data) => {
-        setPosts(data);
+        // Sécurité : Récupère le tableau qu'il soit direct ou encapsulé (ex: data.posts)
+        const actualPosts = Array.isArray(data) ? data : (data.posts || data.data || []);
+        setPosts(actualPosts);
         setLoading(false);
       })
       .catch((err) => {
@@ -31,14 +33,15 @@ function App() {
       });
   }, [API_URL]);
 
-  // 2. Chargement d'un rapport et de ses commentaires
+  // 2. Chargement d'un rapport et de ses commentaires (Sécurisé sans cache)
   const handleViewPost = (post) => {
     setSelectedPost(post);
     setLoadingComments(true);
-    fetch(`${API_URL}/api/posts/${post.id}/comments`)
+    fetch(`${API_URL}/api/posts/${post.id}/comments?_t=${new Date().getTime()}`)
       .then((res) => res.json())
       .then((data) => {
-        setComments(data);
+        const actualComments = Array.isArray(data) ? data : (data.comments || data.data || []);
+        setComments(actualComments);
         setLoadingComments(false);
       })
       .catch((err) => {
@@ -91,7 +94,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[#f4f2ee] text-[#1e293b] selection:bg-[#ea580c] selection:text-white flex flex-col justify-between scroll-smooth">
-      {/* Fond Blanc Foncé (Ivoire / Pierre) et Texte Sombre (Ardoise) */}
       <div>
         {/* 🏛️ HEADER & NAVIGATION */}
         <header className="border-b border-[#ea580c]/20 bg-[#f4f2ee]/90 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
@@ -248,6 +250,8 @@ function App() {
 
               {loading ? (
                 <div className="text-center py-12 text-[#64748b] italic">Chargement...</div>
+              ) : posts.length === 0 ? (
+                <div className="text-center py-12 text-[#64748b] italic">Aucune note publiée pour le moment.</div>
               ) : (
                 <div className="grid md:grid-cols-2 gap-8">
                   {posts.map((post) => (
